@@ -1,0 +1,645 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/@prisma/tenant-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("TENANT_DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  role         Json      @default("[\"EMPLOYEE\"]")
+  departmentId String?
+  isActive     Boolean   @default(true)
+  totpSecret   String?
+  inviteToken  String?   @unique
+  inviteExpiry DateTime?
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  department   Department? @relation(fields: [departmentId], references: [id])
+  employee     Employee?
+  notifications Notification[]
+  notificationPreferences NotificationPreference[]
+  auditLogs    AuditLog[]
+  announcementsCreated Announcement[]
+  announcementReads    AnnouncementRead[]
+  @@map("users")
+}
+
+model Department {
+  id             String   @id @default(cuid())
+  name           String
+  managerId      String?
+  maxAbsentPct   Int      @default(40)
+  approvalLevels Int      @default(1)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  users         User[]
+  approvalFlows ApprovalFlow[]
+  @@map("departments")
+}
+
+model ApprovalFlow {
+  id               String  @id @default(cuid())
+  userId           String? @unique
+  departmentId     String?
+  level1ApproverId String
+  level2ApproverId String?
+  department Department? @relation(fields: [departmentId], references: [id])
+  @@map("approval_flows")
+}
+
+model OrgPosition {
+  id       String  @id @default(cuid())
+  name     String
+  level    Int     @default(5)
+  isSystem Boolean @default(false)
+  color    String  @default("#2E5FA3")
+  @@map("org_positions")
+}
+
+model Employee {
+  id               String         @id @default(cuid())
+  userId           String         @unique
+  title            String?
+  positionLevel    String         @default("EMPLOYEE")
+  reportsToId      String?
+  contractType     ContractType   @default(INDEFINITE)
+  contractStart    DateTime
+  contractEnd      DateTime?
+  employmentType   EmploymentType @default(EMPLOYEE)
+  hoursPerWeek     Decimal        @db.Decimal(4, 1) @default(40)
+  daysPerWeek      Int            @default(5)
+  salaryGross      String?
+  salaryNet        String?
+  leaveDaysPerYear Int            @default(20)
+  leaveRenewalDate DateTime?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  user             User              @relation(fields: [userId], references: [id])
+  personalInfo     EmployeePersonal?
+  documents        EmployeeDocument[]
+  history          EmployeeHistory[]
+  changeRequests   ChangeRequest[]
+  leaveAllocations LeaveAllocation[]
+  leaveRequests    LeaveRequest[]
+  expenseReports   ExpenseReport[]
+  assetAssignments AssetAssignment[]
+  assessmentResponses AssessmentResponse[]
+  @@map("employees")
+}
+
+enum ContractType   { INDEFINITE FIXED_TERM PROJECT }
+enum EmploymentType { EMPLOYEE FREELANCER INTERN }
+
+model EmployeePersonal {
+  id              String    @id @default(cuid())
+  employeeId      String    @unique
+  afm             String?
+  amka            String?
+  dateOfBirth     DateTime?
+  address         String?
+  iban            String?
+  nationality     String?
+  residencePermit String?
+  permitExpiry    DateTime?
+  emergencyName   String?
+  emergencyPhone  String?
+  photoUrl        String?
+  updatedAt       DateTime  @updatedAt
+  employee Employee @relation(fields: [employeeId], references: [id])
+  @@map("employee_personal")
+}
+
+model EmployeeDocument {
+  id         String    @id @default(cuid())
+  employeeId String
+  category   String
+  filename   String
+  fileUrl    String
+  fileSize   Int?
+  expiresAt  DateTime?
+  version    Int       @default(1)
+  uploadedBy String
+  createdAt  DateTime  @default(now())
+  employee Employee @relation(fields: [employeeId], references: [id])
+  @@map("employee_documents")
+}
+
+model EmployeeHistory {
+  id            String   @id @default(cuid())
+  employeeId    String
+  changeType    String
+  oldValue      Json?
+  newValue      Json?
+  effectiveDate DateTime
+  notes         String?
+  changedBy     String
+  createdAt     DateTime @default(now())
+  employee Employee @relation(fields: [employeeId], references: [id])
+  @@map("employee_history")
+}
+
+model ChangeRequest {
+  id           String              @id @default(cuid())
+  employeeId   String
+  fieldName    String
+  oldValue     String?
+  newValue     String?
+  reason       String
+  status       ChangeRequestStatus @default(PENDING)
+  reviewedBy   String?
+  reviewedAt   DateTime?
+  rejectReason String?
+  createdAt    DateTime            @default(now())
+  employee Employee @relation(fields: [employeeId], references: [id])
+  @@map("change_requests")
+}
+
+enum ChangeRequestStatus { PENDING APPROVED REJECTED }
+
+model Announcement {
+  id           String   @id @default(cuid())
+  title        String
+  bodyHtml     String   @db.LongText
+  targetType   String   @default("ALL")
+  departmentId String?
+  isPinned     Boolean  @default(false)
+  createdBy    String
+  publishedAt  DateTime @default(now())
+  createdAt    DateTime @default(now())
+  creator User              @relation(fields: [createdBy], references: [id])
+  reads   AnnouncementRead[]
+  @@map("announcements")
+}
+
+model AnnouncementRead {
+  id             String   @id @default(cuid())
+  announcementId String
+  userId         String
+  readAt         DateTime @default(now())
+  announcement Announcement @relation(fields: [announcementId], references: [id])
+  user         User         @relation(fields: [userId], references: [id])
+  @@unique([announcementId, userId])
+  @@map("announcement_reads")
+}
+
+model Notification {
+  id         String   @id @default(cuid())
+  userId     String
+  type       String
+  title      String
+  body       String
+  entityType String?
+  entityId   String?
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+  @@map("notifications")
+}
+
+model NotificationPreference {
+  id               String  @id @default(cuid())
+  userId           String
+  notificationType String
+  inApp            Boolean @default(true)
+  email            Boolean @default(false)
+  user User @relation(fields: [userId], references: [id])
+  @@unique([userId, notificationType])
+  @@map("notification_preferences")
+}
+
+model LeaveType {
+  id               String  @id @default(cuid())
+  name             String
+  code             String  @unique
+  deductsBalance   Boolean @default(true)
+  requiresApproval Boolean @default(true)
+  maxDaysPerYear   Int?
+  isActive         Boolean @default(true)
+  color            String  @default("#2E5FA3")
+  allocations LeaveAllocation[]
+  requests    LeaveRequest[]
+  @@map("leave_types")
+}
+
+model LeaveAllocation {
+  id          String   @id @default(cuid())
+  employeeId  String
+  year        Int
+  leaveTypeId String
+  entitledDays Int
+  carriedOver  Int     @default(0)
+  usedDays     Int     @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  employee  Employee  @relation(fields: [employeeId], references: [id])
+  leaveType LeaveType @relation(fields: [leaveTypeId], references: [id])
+  @@unique([employeeId, year, leaveTypeId])
+  @@map("leave_allocations")
+}
+
+model LeaveRequest {
+  id               String      @id @default(cuid())
+  employeeId       String
+  leaveTypeId      String
+  startDate        DateTime
+  endDate          DateTime
+  workingDaysCount Int
+  status           LeaveStatus @default(PENDING)
+  note             String?
+  pdfUrl           String?
+  createdAt        DateTime    @default(now())
+  updatedAt        DateTime    @updatedAt
+  employee  Employee      @relation(fields: [employeeId], references: [id])
+  leaveType LeaveType     @relation(fields: [leaveTypeId], references: [id])
+  approvals LeaveApproval[]
+  @@map("leave_requests")
+}
+
+enum LeaveStatus { PENDING PENDING_L2 APPROVED REJECTED CANCELLED WITHDRAWN }
+
+model LeaveApproval {
+  id         String         @id @default(cuid())
+  requestId  String
+  approverId String
+  level      Int            @default(1)
+  action     ApprovalAction
+  reason     String?
+  actionedAt DateTime       @default(now())
+  request LeaveRequest @relation(fields: [requestId], references: [id])
+  @@map("leave_approvals")
+}
+
+enum ApprovalAction { APPROVED REJECTED }
+
+model Holiday {
+  id          String      @id @default(cuid())
+  name        String
+  date        DateTime
+  year        Int
+  isRecurring Boolean     @default(false)
+  type        HolidayType @default(NATIONAL)
+  createdBy   String?
+  @@map("holidays")
+}
+
+enum HolidayType { NATIONAL COMPANY }
+
+model ExpenseReport {
+  id           String        @id @default(cuid())
+  employeeId   String
+  title        String
+  description  String?
+  periodFrom   DateTime
+  periodTo     DateTime
+  reportNumber String        @unique
+  status       ExpenseStatus @default(DRAFT)
+  approverId   String?
+  totalAmount  Decimal       @db.Decimal(10, 2) @default(0)
+  currency     String        @default("EUR")
+  createdBy    String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  employee  Employee         @relation(fields: [employeeId], references: [id])
+  lines     ExpenseLine[]
+  approvals ExpenseApproval[]
+  payment   ExpensePayment?
+  @@map("expense_reports")
+}
+
+enum ExpenseStatus { DRAFT SUBMITTED UNDER_REVIEW APPROVED REJECTED PENDING_PAYMENT PAID CANCELLED }
+
+model ExpenseLine {
+  id          String   @id @default(cuid())
+  reportId    String
+  expenseDate DateTime
+  vendorName  String
+  categoryId  String
+  amount      Decimal  @db.Decimal(10, 2)
+  currency    String   @default("EUR")
+  description String?
+  project     String?
+  receiptUrl  String?
+  createdAt   DateTime @default(now())
+  report   ExpenseReport   @relation(fields: [reportId], references: [id], onDelete: Cascade)
+  category ExpenseCategory @relation(fields: [categoryId], references: [id])
+  @@map("expense_lines")
+}
+
+model ExpenseCategory {
+  id               String   @id @default(cuid())
+  name             String
+  code             String   @unique
+  maxAmountPerLine Decimal? @db.Decimal(10, 2)
+  receiptRequired  Boolean  @default(false)
+  isActive         Boolean  @default(true)
+  isSystem         Boolean  @default(false)
+  sortOrder        Int      @default(0)
+  lines ExpenseLine[]
+  @@map("expense_categories")
+}
+
+model ExpenseApproval {
+  id         String         @id @default(cuid())
+  reportId   String
+  approverId String
+  level      Int            @default(1)
+  action     ApprovalAction
+  reason     String?
+  actionedAt DateTime       @default(now())
+  report ExpenseReport @relation(fields: [reportId], references: [id])
+  @@map("expense_approvals")
+}
+
+model ExpensePayment {
+  id              String        @id @default(cuid())
+  reportId        String        @unique
+  paymentMethod   PaymentMethod
+  paymentDate     DateTime
+  referenceNumber String?
+  notes           String?
+  recordedBy      String
+  createdAt       DateTime      @default(now())
+  report ExpenseReport @relation(fields: [reportId], references: [id])
+  @@map("expense_payments")
+}
+
+enum PaymentMethod { BANK_TRANSFER CASH PAYROLL }
+
+model AssetType {
+  id              String  @id @default(cuid())
+  name            String
+  icon            String  @default("📦")
+  requiresSerial  Boolean @default(false)
+  isSharedAllowed Boolean @default(false)
+  isSystem        Boolean @default(false)
+  isActive        Boolean @default(true)
+  sortOrder       Int     @default(0)
+  assets Asset[]
+  @@map("asset_types")
+}
+
+model Asset {
+  id             String      @id @default(cuid())
+  assetCode      String      @unique
+  typeId         String
+  name           String
+  brand          String?
+  model          String?
+  serialNumber   String?
+  purchaseDate   DateTime?
+  purchaseValue  Decimal?    @db.Decimal(10, 2)
+  warrantyExpiry DateTime?
+  status         AssetStatus @default(ACTIVE_FREE)
+  location       String?
+  notes          String?
+  photoUrl       String?
+  qrCodeUrl      String?
+  isShared       Boolean     @default(false)
+  createdBy      String
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
+  type        AssetType         @relation(fields: [typeId], references: [id])
+  assignments AssetAssignment[]
+  returns     AssetReturn[]
+  history     AssetHistory[]
+  maintenance AssetMaintenance[]
+  @@map("assets")
+}
+
+enum AssetStatus { ACTIVE_ASSIGNED ACTIVE_FREE MAINTENANCE INACTIVE LOST RETIRED }
+
+model AssetAssignment {
+  id                  String   @id @default(cuid())
+  assetId             String
+  employeeId          String
+  assignedDate        DateTime
+  expectedReturn      DateTime?
+  conditionAtDelivery String   @default("GOOD")
+  notes               String?
+  assignedBy          String
+  createdAt           DateTime @default(now())
+  asset    Asset    @relation(fields: [assetId], references: [id])
+  employee Employee @relation(fields: [employeeId], references: [id])
+  returns  AssetReturn[]
+  @@map("asset_assignments")
+}
+
+model AssetReturn {
+  id                String   @id @default(cuid())
+  assignmentId      String
+  assetId           String
+  employeeId        String
+  returnedDate      DateTime
+  conditionAtReturn String   @default("OK")
+  notes             String?
+  photoUrl          String?
+  recordedBy        String
+  createdAt         DateTime @default(now())
+  assignment AssetAssignment @relation(fields: [assignmentId], references: [id])
+  asset      Asset           @relation(fields: [assetId], references: [id])
+  @@map("asset_returns")
+}
+
+model AssetHistory {
+  id          String   @id @default(cuid())
+  assetId     String
+  eventType   String
+  description String
+  oldValue    Json?
+  newValue    Json?
+  employeeId  String?
+  performedBy String
+  createdAt   DateTime @default(now())
+  asset Asset @relation(fields: [assetId], references: [id])
+  @@map("asset_history")
+}
+
+model AssetMaintenance {
+  id           String    @id @default(cuid())
+  assetId      String
+  sentDate     DateTime
+  reason       String
+  returnedDate DateTime?
+  cost         Decimal?  @db.Decimal(10, 2)
+  notes        String?
+  createdBy    String
+  createdAt    DateTime  @default(now())
+  asset Asset @relation(fields: [assetId], references: [id])
+  @@map("asset_maintenance")
+}
+
+model OffboardingChecklist {
+  id              String    @id @default(cuid())
+  employeeId      String
+  terminationDate DateTime
+  assets          Json
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+  @@map("offboarding_checklists")
+}
+
+model AssessmentTemplate {
+  id                       String           @id @default(cuid())
+  title                    String
+  description              String?
+  periodFrom               DateTime
+  periodTo                 DateTime
+  deadline                 DateTime
+  createdBy                String
+  targetType               String           @default("ALL")
+  status                   AssessmentStatus @default(DRAFT)
+  scoringEnabled           Boolean          @default(true)
+  resultsVisibleToEmployee Boolean          @default(false)
+  includeSelfAssessment    Boolean          @default(true)
+  createdAt                DateTime         @default(now())
+  updatedAt                DateTime         @updatedAt
+  questions    AssessmentQuestion[]
+  recipients   AssessmentRecipient[]
+  responses    AssessmentResponse[]
+  meetingNotes AssessmentMeetingNote[]
+  @@map("assessment_templates")
+}
+
+enum AssessmentStatus { DRAFT PUBLISHED CLOSED ARCHIVED }
+
+model AssessmentQuestion {
+  id           String       @id @default(cuid())
+  templateId   String
+  questionText String       @db.Text
+  questionType QuestionType
+  weight       Decimal      @db.Decimal(5, 2) @default(0)
+  orderIndex   Int          @default(0)
+  isRequired   Boolean      @default(true)
+  template AssessmentTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  options  AssessmentOption[]
+  answers  AssessmentAnswer[]
+  @@map("assessment_questions")
+}
+
+enum QuestionType { MULTIPLE_CHOICE CHECKBOXES SCALE TEXT YES_NO STARS }
+
+model AssessmentOption {
+  id         String  @id @default(cuid())
+  questionId String
+  optionText String
+  score      Decimal @db.Decimal(5, 2) @default(0)
+  orderIndex Int     @default(0)
+  question AssessmentQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  @@map("assessment_options")
+}
+
+model AssessmentRecipient {
+  id         String   @id @default(cuid())
+  templateId String
+  employeeId String
+  sentAt     DateTime @default(now())
+  template AssessmentTemplate @relation(fields: [templateId], references: [id])
+  @@map("assessment_recipients")
+}
+
+model AssessmentResponse {
+  id           String       @id @default(cuid())
+  templateId   String
+  employeeId   String
+  respondentId String
+  responseType ResponseType
+  submittedAt  DateTime?
+  totalScore   Decimal?     @db.Decimal(5, 2)
+  createdAt    DateTime     @default(now())
+  template AssessmentTemplate @relation(fields: [templateId], references: [id])
+  employee Employee           @relation(fields: [employeeId], references: [id])
+  answers  AssessmentAnswer[]
+  @@unique([templateId, employeeId, responseType])
+  @@map("assessment_responses")
+}
+
+enum ResponseType { SELF MANAGER }
+
+model AssessmentAnswer {
+  id                String   @id @default(cuid())
+  responseId        String
+  questionId        String
+  selectedOptionIds Json?
+  textAnswer        String?  @db.Text
+  scaleValue        Int?
+  scoreEarned       Decimal? @db.Decimal(5, 2)
+  response AssessmentResponse @relation(fields: [responseId], references: [id], onDelete: Cascade)
+  question AssessmentQuestion @relation(fields: [questionId], references: [id])
+  @@map("assessment_answers")
+}
+
+model AssessmentMeetingNote {
+  id                 String    @id @default(cuid())
+  templateId         String
+  employeeId         String
+  managerId          String
+  meetingDate        DateTime?
+  notesHtml          String?   @db.LongText
+  actionItems        Json?
+  nextGoals          Json?
+  sharedWithEmployee Boolean   @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  template AssessmentTemplate @relation(fields: [templateId], references: [id])
+  @@unique([templateId, employeeId])
+  @@map("assessment_meeting_notes")
+}
+
+model TenantBranding {
+  id            String   @id @default(cuid())
+  logoUrl       String?
+  logoSmUrl     String?
+  logoLgUrl     String?
+  primaryColor  String   @default("#2E5FA3")
+  faviconUrl    String?
+  companyName   String
+  showPoweredBy Boolean  @default(true)
+  updatedAt     DateTime @updatedAt
+  @@map("tenant_branding")
+}
+
+model SmtpSettings {
+  id                String   @id @default(cuid())
+  host              String
+  port              Int      @default(587)
+  username          String
+  passwordEncrypted String
+  fromEmail         String
+  fromName          String
+  useTls            Boolean  @default(true)
+  isCustom          Boolean  @default(false)
+  isActive          Boolean  @default(false)
+  updatedAt         DateTime @updatedAt
+  @@map("smtp_settings")
+}
+
+model SystemSetting {
+  id           String   @id @default(cuid())
+  settingKey   String   @unique
+  settingValue String   @db.Text
+  updatedAt    DateTime @updatedAt
+  @@map("system_settings")
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  module     String
+  action     String
+  entityType String
+  entityId   String?
+  oldValue   Json?
+  newValue   Json?
+  ipAddress  String?
+  createdAt  DateTime @default(now())
+  user User @relation(fields: [userId], references: [id])
+  @@map("audit_logs")
+}

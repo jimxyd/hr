@@ -1,0 +1,48 @@
+{
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "search": "Search",
+    "filter": "Filter",
+    "export": "Export",
+    "import": "Import",
+    "yes": "Yes",
+    "no": "No",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success",
+    "confirm": "Confirm",
+    "close": "Close",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "status": "Status",
+    "actions": "Actions",
+    "all": "All",
+    "none": "None",
+    "required": "Required"
+  },
+  "auth": {
+    "login": "Sign In",
+    "logout": "Sign Out",
+    "email": "Email",
+    "password": "Password",
+    "forgotPassword": "Forgot password",
+    "resetPassword": "Reset password",
+    "invalidCredentials": "Invalid email or password"
+  },
+  "navigation": {
+    "dashboard": "Dashboard",
+    "employees": "Employees",
+    "leaves": "Leaves",
+    "expenses": "Expenses",
+    "assets": "Assets",
+    "performance": "Performance",
+    "announcements": "Announcements",
+    "orgChart": "Org Chart",
+    "settings": "Settings"
+  }
+}

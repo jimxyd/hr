@@ -1,0 +1,123 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../node_modules/@prisma/master-client"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Tenant {
+  id            String       @id @default(cuid())
+  name          String
+  subdomain     String       @unique
+  status        TenantStatus @default(TRIAL)
+  trialEndsAt   DateTime
+  dbName        String       @unique
+  activeModules Json         @default("[\"M1\",\"M2\"]")
+  planId        String?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+  plan          Plan?          @relation(fields: [planId], references: [id])
+  subscriptions Subscription[]
+  platformLogs  PlatformLog[]
+  @@map("tenants")
+}
+
+enum TenantStatus { TRIAL ACTIVE SUSPENDED CANCELLED }
+
+model Plan {
+  id              String   @id @default(cuid())
+  name            String
+  description     String?
+  pricePerUser    Decimal  @db.Decimal(10, 2)
+  modulesIncluded Json     @default("[\"M1\",\"M2\"]")
+  maxUsers        Int?
+  isActive        Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  tenants       Tenant[]
+  subscriptions Subscription[]
+  @@map("plans")
+}
+
+model Subscription {
+  id                   String             @id @default(cuid())
+  tenantId             String
+  planId               String
+  status               SubscriptionStatus @default(ACTIVE)
+  userCount            Int                @default(1)
+  currentPeriodStart   DateTime
+  currentPeriodEnd     DateTime
+  vivaSubscriptionId   String?
+  paypalSubscriptionId String?
+  paymentProvider      PaymentProvider    @default(VIVA)
+  cancelledAt          DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+  tenant   Tenant    @relation(fields: [tenantId], references: [id])
+  plan     Plan      @relation(fields: [planId], references: [id])
+  payments Payment[]
+  @@map("subscriptions")
+}
+
+enum SubscriptionStatus { ACTIVE PAST_DUE CANCELLED SUSPENDED }
+enum PaymentProvider { VIVA PAYPAL }
+
+model Payment {
+  id             String          @id @default(cuid())
+  subscriptionId String
+  amount         Decimal         @db.Decimal(10, 2)
+  currency       String          @default("EUR")
+  status         PaymentStatus   @default(PENDING)
+  provider       PaymentProvider
+  providerTxId   String?
+  refundedAmount Decimal?        @db.Decimal(10, 2)
+  refundedAt     DateTime?
+  refundReason   String?
+  metadata       Json?
+  createdAt      DateTime        @default(now())
+  subscription Subscription @relation(fields: [subscriptionId], references: [id])
+  @@map("payments")
+}
+
+enum PaymentStatus { PENDING COMPLETED FAILED REFUNDED PARTIALLY_REFUNDED }
+
+model SuperAdmin {
+  id           String    @id @default(cuid())
+  name         String
+  email        String    @unique
+  passwordHash String
+  totpSecret   String?
+  isActive     Boolean   @default(true)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  @@map("super_admins")
+}
+
+model EmailTemplate {
+  id           String   @id @default(cuid())
+  triggerEvent String   @unique
+  module       String   @default("platform")
+  subject      String
+  bodyHtml     String   @db.LongText
+  variables    Json     @default("[]")
+  isActive     Boolean  @default(true)
+  updatedAt    DateTime @updatedAt
+  createdAt    DateTime @default(now())
+  @@map("email_templates")
+}
+
+model PlatformLog {
+  id        String   @id @default(cuid())
+  level     LogLevel @default(INFO)
+  message   String
+  context   Json?
+  tenantId  String?
+  createdAt DateTime @default(now())
+  tenant Tenant? @relation(fields: [tenantId], references: [id])
+  @@map("platform_logs")
+}
+
+enum LogLevel { DEBUG INFO WARN ERROR }

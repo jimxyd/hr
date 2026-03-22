@@ -17,6 +17,17 @@ model Tenant {
   dbName        String       @unique
   activeModules Json         @default("[\"M1\",\"M2\"]")
   planId        String?
+  // Contact info
+  contactName   String?
+  contactEmail  String?
+  contactPhone  String?
+  contactMobile String?
+  vatNumber     String?
+  address       String?
+  city          String?
+  postalCode    String?
+  country       String       @default("GR")
+  notes         String?      @db.Text
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
   plan          Plan?          @relation(fields: [planId], references: [id])

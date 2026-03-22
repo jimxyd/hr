@@ -14,7 +14,11 @@ export const GET = withSuperAdmin(async (req, { params }) => {
 
 export const PATCH = withSuperAdmin(async (req, { params }) => {
   const body = await req.json()
-  const allowed = ["status", "planId", "activeModules", "trialEndsAt", "name"]
+  const allowed = [
+    "status", "planId", "activeModules", "trialEndsAt", "name",
+    "contactName", "contactEmail", "contactPhone", "contactMobile",
+    "vatNumber", "address", "city", "postalCode", "country", "notes",
+  ]
   const data: any = {}
   for (const key of allowed) if (key in body) data[key] = body[key]
   const tenant = await masterPrisma.tenant.update({ where: { id: params.id }, data })

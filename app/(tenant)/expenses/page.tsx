@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react"
 import { hasAnyRole } from "@/lib/utils/roles"
 import { PageLoading, PageError, EmptyState } from "@/components/common/page-states"
 import { formatDate } from "@/lib/utils/dates"
+import { HelpBox } from "@/components/common/help-box"
 
 const STATUS_CONFIG: Record<string, { label: string; color: string }> = {
   DRAFT:           { label: "Πρόχειρο",         color: "bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400" },
@@ -46,9 +47,25 @@ export default function ExpensesPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Expenses</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{data?.meta?.total || 0} reports</p>
         </div>
-        <Link href="/expenses/new" className="btn-primary flex items-center gap-2 text-sm">
-          <Plus size={16} aria-hidden="true" /> Νέο Report
-        </Link>
+        <div className="flex items-center gap-3">
+          <HelpBox
+            storageKey="expenses-list"
+            title={isHR ? "Οδηγός Expenses — Manager" : "Οδηγός Expenses"}
+            items={isHR ? [
+              "Βλέπετε όλα τα expense reports της ομάδας — φιλτράρετε ανά κατάσταση.",
+              "Κάντε κλικ στον αριθμό report για να δείτε αναλυτικά τα έξοδα.",
+              "Εγκρίνετε ή απορρίψτε reports μέσα από τη σελίδα λεπτομερειών.",
+            ] : [
+              "Εδώ βλέπετε τα expense reports σας — φιλτράρετε ανά κατάσταση.",
+              "Πατήστε «Νέο Report» για να δημιουργήσετε νέα αναφορά εξόδων.",
+              "Μετά τη δημιουργία, προσθέστε τα επιμέρους έξοδα και υποβάλετε για έγκριση.",
+              "Κάντε κλικ στον αριθμό report για να δείτε/επεξεργαστείτε τα στοιχεία.",
+            ]}
+          />
+          <Link href="/expenses/new" className="btn-primary flex items-center gap-2 text-sm">
+            <Plus size={16} aria-hidden="true" /> Νέο Report
+          </Link>
+        </div>
       </div>
 
       <div className="flex gap-2 flex-wrap" role="group" aria-label="Φίλτρα κατάστασης">

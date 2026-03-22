@@ -2,6 +2,7 @@
 import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Mail, Save, Send } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function EmailTemplatesPage() {
   const [selected, setSelected] = useState<any>(null)
@@ -43,10 +44,19 @@ export default function EmailTemplatesPage() {
 
   return (
     <div className="p-8 space-y-6">
-      <div>
+      <div className="flex items-start justify-between">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
           <Mail size={24} className="text-primary" /> Email Templates
         </h1>
+        <HelpBox
+          storageKey="admin-templates"
+          title="Οδηγός Email Templates"
+          items={[
+            "Επιλέξτε ένα πρότυπο από τη λίστα αριστερά για να το επεξεργαστείτε.",
+            "Χρησιμοποιήστε {{variables}} για δυναμικό περιεχόμενο (π.χ. {{name}}, {{company}}).",
+            "Στείλτε δοκιμαστικό email σε εσάς πριν αποθηκεύσετε αλλαγές.",
+          ]}
+        />
       </div>
 
       <div className="grid grid-cols-3 gap-6 h-[calc(100vh-200px)]">

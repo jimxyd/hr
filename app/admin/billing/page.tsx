@@ -1,6 +1,7 @@
 "use client"
 import { useQuery } from "@tanstack/react-query"
 import { CreditCard, TrendingUp, DollarSign } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function BillingPage() {
   const { data } = useQuery({
@@ -10,11 +11,21 @@ export default function BillingPage() {
 
   return (
     <div className="p-8 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
-          <CreditCard size={24} className="text-primary" /> Billing Overview
-        </h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Επισκόπηση πληρωμών και συνδρομών</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <CreditCard size={24} className="text-primary" /> Billing Overview
+          </h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Επισκόπηση πληρωμών και συνδρομών</p>
+        </div>
+        <HelpBox
+          storageKey="admin-billing"
+          title="Οδηγός Billing"
+          items={[
+            "Βλέπετε συνολικά έσοδα, πληρωτέους και ενεργούς tenants.",
+            "Η αναλυτική τιμολόγηση ανά tenant διαχειρίζεται μέσω της σελίδας κάθε tenant.",
+          ]}
+        />
       </div>
 
       <div className="grid grid-cols-3 gap-6">

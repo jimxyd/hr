@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useSession } from "next-auth/react"
 import { Bell, Shield, User } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 const notificationTypes = [
   { key: "LEAVE_REQUEST", label: "Αίτημα άδειας (για εγκριτές)" },
@@ -39,7 +40,18 @@ export default function ProfileSettingsPage() {
 
   return (
     <div className="p-6 max-w-2xl">
-      <h1 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">Ρυθμίσεις Προφίλ</h1>
+      <div className="flex items-start justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ρυθμίσεις Προφίλ</h1>
+        <HelpBox
+          storageKey="profile-settings"
+          title="Οδηγός Ρυθμίσεων"
+          items={[
+            "Στις Ειδοποιήσεις επιλέγετε ποιες ειδοποιήσεις θέλετε In-App ή μέσω Email.",
+            "In-App ειδοποιήσεις εμφανίζονται στο καμπανάκι πάνω δεξιά.",
+            "Η Ασφάλεια περιλαμβάνει αλλαγή κωδικού (σύντομα διαθέσιμο).",
+          ]}
+        />
+      </div>
 
       {/* Tabs */}
       <div className="flex gap-1 bg-gray-100 dark:bg-gray-800 p-1 rounded-lg mb-6 w-fit">

@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { Plus, Search, ExternalLink, Ban, RefreshCw, Trash2 } from "lucide-react"
 import Link from "next/link"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function TenantsPage() {
   const [search, setSearch] = useState("")
@@ -33,13 +34,25 @@ export default function TenantsPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Tenants</h1>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Διαχείριση εταιρειών-πελατών</p>
         </div>
-        <Link
-          href="/admin/tenants/new"
-          className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
-        >
-          <Plus size={16} />
-          Νέος Tenant
-        </Link>
+        <div className="flex items-center gap-3">
+          <HelpBox
+            storageKey="admin-tenants"
+            title="Οδηγός Διαχείρισης Tenants"
+            items={[
+              "Κάντε κλικ σε ένα tenant για να δείτε λεπτομέρειες, να επεκτείνετε trial ή να αλλάξετε κατάσταση.",
+              "Χρησιμοποιήστε τα φίλτρα για γρήγορη εύρεση ανά όνομα ή κατάσταση.",
+              "«Αναστολή» απενεργοποιεί τον tenant χωρίς να διαγράφει δεδομένα.",
+              "Πατήστε «Νέος Tenant» για onboarding νέας εταιρείας-πελάτη.",
+            ]}
+          />
+          <Link
+            href="/admin/tenants/new"
+            className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            <Plus size={16} />
+            Νέος Tenant
+          </Link>
+        </div>
       </div>
 
       {/* Filters */}

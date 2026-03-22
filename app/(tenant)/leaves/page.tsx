@@ -4,6 +4,7 @@ import Link from "next/link"
 import { Plus, Calendar, Clock, CheckCircle, XCircle } from "lucide-react"
 import { PageLoading, PageError, EmptyState } from "@/components/common/page-states"
 import { formatDate } from "@/lib/utils/dates"
+import { HelpBox } from "@/components/common/help-box"
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; Icon: any }> = {
   PENDING:    { label: "Εκκρεμεί",    color: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400", Icon: Clock },
@@ -45,7 +46,17 @@ export default function LeavesPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Άδειες</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Έτος {year}</p>
         </div>
-        <div className="flex gap-3">
+        <div className="flex items-center gap-3">
+          <HelpBox
+            storageKey="leaves-list"
+            title="Οδηγός Αδειών"
+            items={[
+              "Στο πάνω μέρος βλέπετε τα υπόλοιπα αδειών σας ανά τύπο για το τρέχον έτος.",
+              "Πατήστε «Νέο Αίτημα» για να υποβάλετε αίτημα άδειας.",
+              "Τα αιτήματα περνούν από έγκριση — θα ενημερωθείτε με ειδοποίηση.",
+              "Το «Ημερολόγιο» δείχνει τις άδειες ολόκληρης της ομάδας σας.",
+            ]}
+          />
           <Link href="/leaves/calendar" className="btn-secondary flex items-center gap-2 text-sm" aria-label="Ημερολόγιο ομάδας">
             <Calendar size={16} aria-hidden="true" /> Ημερολόγιο
           </Link>

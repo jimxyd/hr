@@ -5,6 +5,7 @@ import { CheckCircle, XCircle } from "lucide-react"
 import { PageLoading, PageError, EmptyState } from "@/components/common/page-states"
 import { useToast } from "@/components/common/toast"
 import { formatDate } from "@/lib/utils/dates"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function LeaveApprovalsPage() {
   const [rejectId, setRejectId] = useState<string | null>(null)
@@ -61,9 +62,21 @@ export default function LeaveApprovalsPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Εκκρεμείς Εγκρίσεις</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{requests.length} αιτήματα περιμένουν</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Εκκρεμείς Εγκρίσεις</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{requests.length} αιτήματα περιμένουν</p>
+        </div>
+        <HelpBox
+          storageKey="leaves-approvals"
+          title="Οδηγός Εγκρίσεων"
+          items={[
+            "Εδώ βλέπετε τα αιτήματα αδειών που περιμένουν τη δική σας έγκριση.",
+            "Πατήστε «Έγκριση» για να εγκρίνετε ή «Απόρριψη» με αιτιολογία.",
+            "Ο εργαζόμενος ειδοποιείται αυτόματα για την απόφασή σας.",
+            "Ελέγξτε τις ημερομηνίες και τις εργάσιμες ημέρες πριν αποφασίσετε.",
+          ]}
+        />
       </div>
 
       {requests.length === 0 ? (

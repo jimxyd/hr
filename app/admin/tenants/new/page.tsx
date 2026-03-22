@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 const schema = z.object({
   companyName: z.string().min(2, "Τουλάχιστον 2 χαρακτήρες"),
@@ -78,6 +79,17 @@ export default function NewTenantPage() {
           <p className="text-sm text-gray-500 dark:text-gray-400">Δημιουργία νέας εταιρείας-πελάτη</p>
         </div>
       </div>
+
+      <HelpBox
+        storageKey="admin-tenants-new"
+        title="Οδηγός Δημιουργίας Tenant"
+        items={[
+          "Το subdomain θα είναι η διεύθυνση πρόσβασης (π.χ. acme.ergohub.gr).",
+          "Ο Admin λογαριασμός θα λάβει email ενεργοποίησης.",
+          "Επιλέξτε ποια modules θέλετε ενεργά — μπορείτε να αλλάξετε αργότερα.",
+          "Το trial ξεκινά από τη στιγμή δημιουργίας (default 30 ημέρες).",
+        ]}
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Company Info */}

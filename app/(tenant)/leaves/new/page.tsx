@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import Link from "next/link"
 import { ArrowLeft, Calendar } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 const schema = z.object({
   leaveTypeId: z.string().min(1, "Επιλέξτε τύπο άδειας"),
@@ -83,6 +84,17 @@ export default function NewLeavePage() {
           <p className="text-sm text-gray-500 dark:text-gray-400">Συμπλήρωσε τα στοιχεία της άδειας</p>
         </div>
       </div>
+
+      <HelpBox
+        storageKey="leaves-new"
+        title="Οδηγός Αιτήματος Άδειας"
+        items={[
+          "Επιλέξτε τύπο άδειας — το διαθέσιμο υπόλοιπο εμφανίζεται αυτόματα.",
+          "Μόλις συμπληρώσετε ημερομηνίες, εμφανίζεται ο αριθμός εργάσιμων ημερών.",
+          "Αν οι ημέρες υπερβαίνουν το υπόλοιπο, εμφανίζεται προειδοποίηση.",
+          "Το σχόλιο είναι προαιρετικό αλλά βοηθά τον εγκριτή να κατανοήσει το αίτημα.",
+        ]}
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 space-y-4">

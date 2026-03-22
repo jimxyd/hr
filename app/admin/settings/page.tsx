@@ -2,16 +2,26 @@
 import { useState } from "react"
 import { useForm } from "react-hook-form"
 import { Settings, Mail, Key } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function SuperAdminSettingsPage() {
   const [success, setSuccess] = useState("")
 
   return (
     <div className="p-8 max-w-2xl space-y-6">
-      <div>
+      <div className="flex items-start justify-between">
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
           <Settings size={24} className="text-primary" /> Platform Ρυθμίσεις
         </h1>
+        <HelpBox
+          storageKey="admin-settings"
+          title="Οδηγός Platform Ρυθμίσεων"
+          items={[
+            "Οι ρυθμίσεις SMTP διαχειρίζονται μέσω .env αρχείου στον server.",
+            "Η αλλαγή SMTP επηρεάζει τα platform emails (trial, onboarding, κ.λπ.).",
+            "Για SMTP ρυθμίσεις ανά tenant, χρησιμοποιήστε τις ρυθμίσεις μέσα στον κάθε tenant.",
+          ]}
+        />
       </div>
 
       {/* Platform SMTP */}

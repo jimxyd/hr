@@ -7,6 +7,7 @@ import { PageLoading, PageError, EmptyState, SkeletonCard } from "@/components/c
 import { useToast } from "@/components/common/toast"
 import { hasAnyRole } from "@/lib/utils/roles"
 import { formatDateTime } from "@/lib/utils/dates"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function AnnouncementsPage() {
   const { data: session } = useSession()
@@ -42,11 +43,26 @@ export default function AnnouncementsPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ανακοινώσεις</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{data?.meta?.total || 0} ανακοινώσεις</p>
         </div>
-        {isHR && (
-          <Link href="/announcements/new" className="btn-primary flex items-center gap-2 text-sm">
-            <Plus size={16} aria-hidden="true" /> Νέα Ανακοίνωση
-          </Link>
-        )}
+        <div className="flex items-center gap-3">
+          <HelpBox
+            storageKey="announcements"
+            title={isHR ? "Οδηγός Ανακοινώσεων — Admin" : "Οδηγός Ανακοινώσεων"}
+            items={isHR ? [
+              "Πατήστε «Νέα Ανακοίνωση» για να δημοσιεύσετε ανακοίνωση σε όλους τους εργαζομένους.",
+              "Μπορείτε να καρφιτσώσετε σημαντικές ανακοινώσεις ώστε να εμφανίζονται πρώτες.",
+              "Δεξιά κάτω βλέπετε πόσοι εργαζόμενοι έχουν διαβάσει κάθε ανακοίνωση.",
+            ] : [
+              "Κάντε κλικ σε μια ανακοίνωση για να τη διαβάσετε — σημειώνεται αυτόματα ως αναγνωσμένη.",
+              "Οι ανακοινώσεις με «Νέο» badge δεν έχουν διαβαστεί ακόμα.",
+              "Οι καρφιτσωμένες (📌) ανακοινώσεις είναι σημαντικές και εμφανίζονται πρώτες.",
+            ]}
+          />
+          {isHR && (
+            <Link href="/announcements/new" className="btn-primary flex items-center gap-2 text-sm">
+              <Plus size={16} aria-hidden="true" /> Νέα Ανακοίνωση
+            </Link>
+          )}
+        </div>
       </div>
 
       {announcements.length === 0 ? (

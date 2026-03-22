@@ -3,6 +3,7 @@ import { useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Building2, Users } from "lucide-react"
 import { useQuery as useDeptsQuery } from "@tanstack/react-query"
+import { HelpBox } from "@/components/common/help-box"
 
 function OrgNode({ node, depth = 0 }: { node: any; depth?: number }) {
   const [expanded, setExpanded] = useState(depth < 2)
@@ -65,9 +66,20 @@ export default function OrgChartPage() {
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center justify-between flex-wrap gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Οργανόγραμμα</h1>
-          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Ιεραρχία εταιρείας</p>
+        <div className="flex items-center gap-3">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Οργανόγραμμα</h1>
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Ιεραρχία εταιρείας</p>
+          </div>
+          <HelpBox
+            storageKey="org-chart"
+            title="Οδηγός Οργανογράμματος"
+            items={[
+              "Κάντε κλικ σε ένα κόμβο για να αναδιπλώσετε/επεκτείνετε τους υφισταμένους.",
+              "Επιλέξτε «Τμήμα» για να δείτε μόνο ένα συγκεκριμένο τμήμα.",
+              "Η θέση κάθε ατόμου (π.χ. Manager, Team Leader) εμφανίζεται κάτω από το όνομα.",
+            ]}
+          />
         </div>
         <div className="flex gap-3">
           <div className="flex bg-gray-100 dark:bg-gray-800 rounded-lg p-1">

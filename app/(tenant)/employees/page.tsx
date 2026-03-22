@@ -4,6 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { Plus, Search } from "lucide-react"
 import { PageLoading, PageError, EmptyState, SkeletonCard } from "@/components/common/page-states"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function EmployeesPage() {
   const [search, setSearch] = useState("")
@@ -30,9 +31,21 @@ export default function EmployeesPage() {
           <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Εργαζόμενοι</h1>
           <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">{total} εργαζόμενοι</p>
         </div>
-        <Link href="/employees/new" className="btn-primary flex items-center gap-2 text-sm">
-          <Plus size={16} aria-hidden="true" /> Νέος Εργαζόμενος
-        </Link>
+        <div className="flex items-center gap-3">
+          <HelpBox
+            storageKey="employees-list"
+            title="Οδηγός Εργαζομένων"
+            items={[
+              "Κάντε κλικ σε μια κάρτα εργαζομένου για να δείτε τα αναλυτικά στοιχεία του.",
+              "Χρησιμοποιήστε την αναζήτηση για να βρείτε εργαζόμενο ανά όνομα ή email.",
+              "Πατήστε «Νέος Εργαζόμενος» για να προσθέσετε κάποιον — θα λάβει email πρόσκλησης.",
+              "Ο πράσινος κύκλος δείχνει ενεργό λογαριασμό, ο γκρι ανενεργό.",
+            ]}
+          />
+          <Link href="/employees/new" className="btn-primary flex items-center gap-2 text-sm">
+            <Plus size={16} aria-hidden="true" /> Νέος Εργαζόμενος
+          </Link>
+        </div>
       </div>
 
       <div className="relative max-w-sm">

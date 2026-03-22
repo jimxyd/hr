@@ -7,6 +7,7 @@ import { z } from "zod"
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 const schema = z.object({
   name: z.string().min(2, "Τουλάχιστον 2 χαρακτήρες"),
@@ -88,6 +89,17 @@ export default function NewEmployeePage() {
           <p className="text-sm text-gray-500 dark:text-gray-400">Συμπλήρωσε τα στοιχεία του εργαζομένου</p>
         </div>
       </div>
+
+      <HelpBox
+        storageKey="employees-new"
+        title="Οδηγός Δημιουργίας Εργαζομένου"
+        items={[
+          "Τα πεδία με * είναι υποχρεωτικά (Ονοματεπώνυμο, Email, Ημ. Έναρξης).",
+          "Ο εργαζόμενος θα λάβει email πρόσκλησης για να ενεργοποιήσει τον λογαριασμό του.",
+          "Επιλέξτε «Ρόλος στο Σύστημα» ανάλογα με τα δικαιώματα που θέλετε (Manager βλέπει ομάδα, HR διαχειρίζεται όλους).",
+          "Αν η σύμβαση είναι ορισμένου χρόνου, εμφανίζεται πεδίο λήξης.",
+        ]}
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         {/* Basic Info */}

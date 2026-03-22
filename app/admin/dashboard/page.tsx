@@ -1,6 +1,7 @@
 "use client"
 import { useQuery } from "@tanstack/react-query"
 import { Users, TrendingUp, AlertTriangle, CheckCircle, Clock } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 interface Stats {
   tenants: { total: number; active: number; trial: number; suspended: number }
@@ -26,9 +27,20 @@ export default function SuperAdminDashboard() {
 
   return (
     <div className="p-8 space-y-8">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Platform Dashboard</h1>
-        <p className="text-gray-500 dark:text-gray-400 mt-1">Επισκόπηση ολόκληρης της πλατφόρμας</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Platform Dashboard</h1>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">Επισκόπηση ολόκληρης της πλατφόρμας</p>
+        </div>
+        <HelpBox
+          storageKey="admin-dashboard"
+          title="Οδηγός Platform Dashboard"
+          items={[
+            "Βλέπετε συνολική εικόνα: πόσοι tenants είναι ενεργοί, σε trial ή σε αναστολή.",
+            "Οι τελευταίες εγγραφές εμφανίζονται κάτω — κάντε κλικ σε tenant για λεπτομέρειες.",
+            "Για διαχείριση tenants μεταβείτε στο μενού «Εταιρείες».",
+          ]}
+        />
       </div>
 
       {/* Stats Grid */}

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query"
 import { useSession } from "next-auth/react"
 import { Mail, Phone, MapPin, Calendar, Briefcase, Shield } from "lucide-react"
 import { formatDate } from "@/lib/utils/dates"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function ProfilePage() {
   const { data: session } = useSession()
@@ -28,6 +29,15 @@ export default function ProfilePage() {
 
   return (
     <div className="p-6 max-w-3xl space-y-6">
+      <HelpBox
+        storageKey="profile"
+        title="Οδηγός Προφίλ"
+        items={[
+          "Εδώ βλέπετε τα στοιχεία σας: επικοινωνία, εργασιακά και υπόλοιπα αδειών.",
+          "Πατήστε «Επεξεργασία» για να αλλάξετε τις ρυθμίσεις ειδοποιήσεων.",
+          "Τα εργασιακά στοιχεία (σύμβαση, ωράριο) ενημερώνονται από το HR.",
+        ]}
+      />
       {/* Header */}
       <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700">
         <div className="flex items-center gap-5">

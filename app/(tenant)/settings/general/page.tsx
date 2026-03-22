@@ -2,6 +2,7 @@
 import { useState, useRef } from "react"
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { Upload, Palette, Eye } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function GeneralSettingsPage() {
   const [loading, setLoading] = useState(false)
@@ -41,9 +42,20 @@ export default function GeneralSettingsPage() {
 
   return (
     <div className="p-6 max-w-2xl">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ρυθμίσεις Εταιρείας</h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Branding και εμφάνιση</p>
+      <div className="flex items-start justify-between mb-6">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ρυθμίσεις Εταιρείας</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Branding και εμφάνιση</p>
+        </div>
+        <HelpBox
+          storageKey="settings-general"
+          title="Οδηγός Ρυθμίσεων Εταιρείας"
+          items={[
+            "Αλλάξτε το όνομα εταιρείας που εμφανίζεται σε όλη την εφαρμογή.",
+            "Ανεβάστε logo (PNG/JPG/WebP, max 2MB) — δημιουργούνται αυτόματα όλα τα μεγέθη.",
+            "Επιλέξτε Primary Color για να ταιριάξει η εφαρμογή με τα χρώματα της εταιρείας σας.",
+          ]}
+        />
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">

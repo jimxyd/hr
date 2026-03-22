@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { z } from "zod"
 import Link from "next/link"
 import { ArrowLeft } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 const schema = z.object({
   title: z.string().min(2, "Τουλάχιστον 2 χαρακτήρες"),
@@ -54,6 +55,16 @@ export default function NewExpensePage() {
           <p className="text-sm text-gray-500 mt-1">Δημιουργία νέας αναφοράς εξόδων</p>
         </div>
       </div>
+
+      <HelpBox
+        storageKey="expenses-new"
+        title="Οδηγός Δημιουργίας Expense Report"
+        items={[
+          "Δώστε έναν περιγραφικό τίτλο (π.χ. «Έξοδα Ιανουαρίου» ή «Ταξίδι Θεσσαλονίκη»).",
+          "Η περίοδος αφορά το χρονικό διάστημα που καλύπτουν τα έξοδα.",
+          "Μετά τη δημιουργία, θα μπορείτε να προσθέσετε τα επιμέρους έξοδα με αποδείξεις.",
+        ]}
+      />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
         <div className="bg-white dark:bg-gray-800 rounded-xl p-6 border border-gray-200 dark:border-gray-700 space-y-4">

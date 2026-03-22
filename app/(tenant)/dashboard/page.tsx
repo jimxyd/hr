@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react"
 import { Calendar, Clock, CheckCircle, Package, Bell, ChevronRight, TrendingUp } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts"
 import { formatDate } from "@/lib/utils/dates"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function DashboardPage() {
   const { data: session } = useSession()
@@ -40,13 +41,33 @@ export default function DashboardPage() {
   return (
     <div className="p-6 space-y-6">
       {/* Greeting */}
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
-          {greeting}, {session?.user?.name?.split(" ")[0]}! 👋
-        </h1>
-        <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
-          {new Date().toLocaleDateString("el-GR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
-        </p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+            {greeting}, {session?.user?.name?.split(" ")[0]}! 👋
+          </h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
+            {new Date().toLocaleDateString("el-GR", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
+          </p>
+        </div>
+        <HelpBox
+          storageKey="dashboard"
+          title={isHR ? "Οδηγός Dashboard — Admin/HR" : isManager ? "Οδηγός Dashboard — Manager" : "Οδηγός Dashboard"}
+          items={isHR ? [
+            "Βλέπετε συνολική εικόνα εργαζομένων, εκκρεμών εγκρίσεων και συμβάσεων που λήγουν.",
+            "Κάντε κλικ στις κάρτες KPI για γρήγορη πρόσβαση (π.χ. Εκκρεμείς Εγκρίσεις → Άδειες).",
+            "Από τις Γρήγορες Ενέργειες μπορείτε να δημιουργήσετε νέο εργαζόμενο ή να εγκρίνετε άδειες.",
+            "Τα γραφήματα δείχνουν τάσεις αδειών ανά μήνα και τύπο για τρέχον έτος.",
+          ] : isManager ? [
+            "Βλέπετε τους απόντες της ομάδας σας σήμερα και τις εκκρεμείς εγκρίσεις.",
+            "Κάντε κλικ στις κάρτες KPI για να μεταβείτε κατευθείαν στις εγκρίσεις.",
+            "Από τις Γρήγορες Ενέργειες μπορείτε να κάνετε αίτημα άδειας ή να εγκρίνετε αιτήματα.",
+          ] : [
+            "Εδώ βλέπετε τα υπόλοιπα αδειών σας και τις επερχόμενες άδειες.",
+            "Κάντε κλικ στο «Νέο αίτημα άδειας» ή «Νέο expense report» για γρήγορη καταχώρηση.",
+            "Οι ανακοινώσεις εμφανίζονται στο κάτω μέρος — κάντε κλικ για να τις διαβάσετε.",
+          ]}
+        />
       </div>
 
       {/* ── HR/Admin KPIs ── */}

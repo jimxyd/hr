@@ -2,6 +2,7 @@
 import { useQuery } from "@tanstack/react-query"
 import { useState } from "react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import { HelpBox } from "@/components/common/help-box"
 
 export default function LeaveCalendarPage() {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -37,8 +38,20 @@ export default function LeaveCalendarPage() {
 
   return (
     <div className="p-6 space-y-6">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ημερολόγιο Ομάδας</h1>
+      <div className="flex items-center justify-between flex-wrap gap-4">
+        <div className="flex items-center gap-3">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Ημερολόγιο Ομάδας</h1>
+          <HelpBox
+            storageKey="leaves-calendar"
+            title="Οδηγός Ημερολογίου"
+            items={[
+              "Κάθε χρωματιστή μπάρα αντιστοιχεί σε εγκεκριμένη άδεια ενός μέλους της ομάδας.",
+              "Χρησιμοποιήστε τα βέλη για πλοήγηση ανά μήνα.",
+              "Τα Σαββατοκύριακα εμφανίζονται με γκρι φόντο.",
+              "Αν ένα κελί δείχνει «+Ν ακόμα», υπάρχουν περισσότερες άδειες εκείνη την ημέρα.",
+            ]}
+          />
+        </div>
         <div className="flex items-center gap-3">
           <button onClick={prevMonth} className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
             <ChevronLeft size={20} className="text-gray-500" />

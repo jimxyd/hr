@@ -93,7 +93,7 @@ export default function EmailTemplatesPage() {
           </div>
         ) : (
           <div className="col-span-2 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 flex items-center justify-center text-gray-400">
-            Επιλέξτε template
+            Επιλέξτε πρότυπο
           </div>
         )}
       </div>

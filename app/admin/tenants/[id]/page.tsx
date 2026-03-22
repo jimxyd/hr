@@ -25,7 +25,7 @@ export default function TenantDetailPage() {
   })
 
   const extendTrial = () => {
-    const days = parseInt(prompt("Extend trial by how many days?") || "0")
+    const days = parseInt(prompt("Πόσες ημέρες επέκταση trial;") || "0")
     if (days > 0) {
       const newExpiry = new Date(Date.now() + days * 86400000)
       updateMutation.mutate({ trialEndsAt: newExpiry.toISOString(), status: "TRIAL" })
@@ -34,7 +34,7 @@ export default function TenantDetailPage() {
 
   const tenant = data?.data
   if (isLoading) return <div className="p-8 text-center text-gray-500">Φόρτωση...</div>
-  if (!tenant) return <div className="p-8 text-center text-gray-500">Tenant δεν βρέθηκε</div>
+  if (!tenant) return <div className="p-8 text-center text-gray-500">Εταιρεία δεν βρέθηκε</div>
 
   const domain = process.env.NEXT_PUBLIC_DOMAIN || "ergohub.gr"
   const statusStyles: Record<string, string> = {

@@ -63,7 +63,7 @@ export default function NewEmployeePage() {
       const json = await res.json()
       if (!json.success) { setError(json.error?.message || "Σφάλμα"); return }
       router.push(`/employees/${json.data.id}`)
-    } catch (err) { setError("Σφάλμα σύνδεσης: " + (err instanceof Error ? err.message : "")) }
+    } catch (err) { setError("Σφάλμα σύνδεσης. Παρακαλώ δοκιμάστε ξανά.") }
     finally { setLoading(false) }
   }
 

@@ -72,7 +72,7 @@ export default function ExpenseDetailPage({ params }: { params: { id: string } }
   const categories = categoriesData?.data || []
 
   if (isLoading) return <div className="p-6 flex justify-center"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" /></div>
-  if (!report) return <div className="p-6 text-gray-500">Report δεν βρέθηκε</div>
+  if (!report) return <div className="p-6 text-gray-500">Αναφορά δεν βρέθηκε</div>
 
   const status = STATUS_CONFIG[report.status]
   const canEdit = ["DRAFT", "REJECTED"].includes(report.status)

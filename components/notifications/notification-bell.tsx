@@ -24,7 +24,7 @@ export function NotificationBell() {
   const { data } = useQuery({
     queryKey: ["notifications"],
     queryFn: () => fetch("/api/notifications").then(r => {
-      if (!r.ok) throw new Error("Failed")
+      if (!r.ok) throw new Error("Αποτυχία")
       return r.json()
     }),
     refetchInterval: 60000,

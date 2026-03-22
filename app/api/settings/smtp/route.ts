@@ -87,6 +87,6 @@ export async function POST(req: NextRequest) {
     })
     return NextResponse.json(successResponse({ sent: true }))
   } catch (err: any) {
-    return NextResponse.json(errorResponse("SMTP_ERROR", err.message), { status: 400 })
+    return NextResponse.json(errorResponse("SMTP_ERROR", "Αποτυχία αποστολής δοκιμαστικού email. Ελέγξτε τις ρυθμίσεις SMTP."), { status: 400 })
   }
 }

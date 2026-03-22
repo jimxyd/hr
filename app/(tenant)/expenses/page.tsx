@@ -66,7 +66,7 @@ export default function ExpensesPage() {
       </div>
 
       {isLoading ? <PageLoading /> : reports.length === 0 ? (
-        <EmptyState icon="💰" title="Δεν βρέθηκαν expense reports"
+        <EmptyState icon="💰" title="Δεν βρέθηκαν αναφορές εξόδων"
           action={{ label: "Νέο report", href: "/expenses/new" }} />
       ) : (
         <div className="bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700 overflow-hidden">

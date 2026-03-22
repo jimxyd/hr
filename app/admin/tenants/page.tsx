@@ -83,7 +83,7 @@ export default function TenantsPage() {
             {isLoading ? (
               <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-500">Φόρτωση...</td></tr>
             ) : tenants.length === 0 ? (
-              <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-500">Δεν βρέθηκαν tenants</td></tr>
+              <tr><td colSpan={6} className="px-6 py-8 text-center text-gray-500">Δεν βρέθηκαν εταιρείες</td></tr>
             ) : tenants.map((tenant: any) => (
               <tr key={tenant.id} className="hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
                 <td className="px-6 py-4">
@@ -124,7 +124,7 @@ export default function TenantsPage() {
                       <button
                         onClick={() => updateStatus.mutate({ id: tenant.id, status: "SUSPENDED" })}
                         className="p-1.5 text-gray-500 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors"
-                        title="Suspend"
+                        title="Αναστολή"
                       >
                         <Ban size={16} />
                       </button>
@@ -132,7 +132,7 @@ export default function TenantsPage() {
                       <button
                         onClick={() => updateStatus.mutate({ id: tenant.id, status: "ACTIVE" })}
                         className="p-1.5 text-gray-500 hover:text-green-500 hover:bg-green-50 dark:hover:bg-green-900/20 rounded transition-colors"
-                        title="Activate"
+                        title="Ενεργοποίηση"
                       >
                         <RefreshCw size={16} />
                       </button>

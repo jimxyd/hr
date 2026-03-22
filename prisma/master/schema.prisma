@@ -25,7 +25,12 @@ model Tenant {
   @@map("tenants")
 }
 
-enum TenantStatus { TRIAL ACTIVE SUSPENDED CANCELLED }
+enum TenantStatus {
+  TRIAL
+  ACTIVE
+  SUSPENDED
+  CANCELLED
+}
 
 model Plan {
   id              String   @id @default(cuid())
@@ -61,8 +66,17 @@ model Subscription {
   @@map("subscriptions")
 }
 
-enum SubscriptionStatus { ACTIVE PAST_DUE CANCELLED SUSPENDED }
-enum PaymentProvider { VIVA PAYPAL }
+enum SubscriptionStatus {
+  ACTIVE
+  PAST_DUE
+  CANCELLED
+  SUSPENDED
+}
+
+enum PaymentProvider {
+  VIVA
+  PAYPAL
+}
 
 model Payment {
   id             String          @id @default(cuid())
@@ -81,7 +95,13 @@ model Payment {
   @@map("payments")
 }
 
-enum PaymentStatus { PENDING COMPLETED FAILED REFUNDED PARTIALLY_REFUNDED }
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  PARTIALLY_REFUNDED
+}
 
 model SuperAdmin {
   id           String    @id @default(cuid())
@@ -120,4 +140,9 @@ model PlatformLog {
   @@map("platform_logs")
 }
 
-enum LogLevel { DEBUG INFO WARN ERROR }
+enum LogLevel {
+  DEBUG
+  INFO
+  WARN
+  ERROR
+}

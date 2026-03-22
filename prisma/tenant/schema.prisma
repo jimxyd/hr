@@ -95,8 +95,17 @@ model Employee {
   @@map("employees")
 }
 
-enum ContractType   { INDEFINITE FIXED_TERM PROJECT }
-enum EmploymentType { EMPLOYEE FREELANCER INTERN }
+enum ContractType {
+  INDEFINITE
+  FIXED_TERM
+  PROJECT
+}
+
+enum EmploymentType {
+  EMPLOYEE
+  FREELANCER
+  INTERN
+}
 
 model EmployeePersonal {
   id              String    @id @default(cuid())
@@ -162,7 +171,11 @@ model ChangeRequest {
   @@map("change_requests")
 }
 
-enum ChangeRequestStatus { PENDING APPROVED REJECTED }
+enum ChangeRequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
 
 model Announcement {
   id           String   @id @default(cuid())
@@ -263,7 +276,14 @@ model LeaveRequest {
   @@map("leave_requests")
 }
 
-enum LeaveStatus { PENDING PENDING_L2 APPROVED REJECTED CANCELLED WITHDRAWN }
+enum LeaveStatus {
+  PENDING
+  PENDING_L2
+  APPROVED
+  REJECTED
+  CANCELLED
+  WITHDRAWN
+}
 
 model LeaveApproval {
   id         String         @id @default(cuid())
@@ -277,7 +297,10 @@ model LeaveApproval {
   @@map("leave_approvals")
 }
 
-enum ApprovalAction { APPROVED REJECTED }
+enum ApprovalAction {
+  APPROVED
+  REJECTED
+}
 
 model Holiday {
   id          String      @id @default(cuid())
@@ -290,7 +313,10 @@ model Holiday {
   @@map("holidays")
 }
 
-enum HolidayType { NATIONAL COMPANY }
+enum HolidayType {
+  NATIONAL
+  COMPANY
+}
 
 model ExpenseReport {
   id           String        @id @default(cuid())
@@ -314,7 +340,16 @@ model ExpenseReport {
   @@map("expense_reports")
 }
 
-enum ExpenseStatus { DRAFT SUBMITTED UNDER_REVIEW APPROVED REJECTED PENDING_PAYMENT PAID CANCELLED }
+enum ExpenseStatus {
+  DRAFT
+  SUBMITTED
+  UNDER_REVIEW
+  APPROVED
+  REJECTED
+  PENDING_PAYMENT
+  PAID
+  CANCELLED
+}
 
 model ExpenseLine {
   id          String   @id @default(cuid())
@@ -371,7 +406,11 @@ model ExpensePayment {
   @@map("expense_payments")
 }
 
-enum PaymentMethod { BANK_TRANSFER CASH PAYROLL }
+enum PaymentMethod {
+  BANK_TRANSFER
+  CASH
+  PAYROLL
+}
 
 model AssetType {
   id              String  @id @default(cuid())
@@ -414,7 +453,14 @@ model Asset {
   @@map("assets")
 }
 
-enum AssetStatus { ACTIVE_ASSIGNED ACTIVE_FREE MAINTENANCE INACTIVE LOST RETIRED }
+enum AssetStatus {
+  ACTIVE_ASSIGNED
+  ACTIVE_FREE
+  MAINTENANCE
+  INACTIVE
+  LOST
+  RETIRED
+}
 
 model AssetAssignment {
   id                  String   @id @default(cuid())
@@ -508,7 +554,12 @@ model AssessmentTemplate {
   @@map("assessment_templates")
 }
 
-enum AssessmentStatus { DRAFT PUBLISHED CLOSED ARCHIVED }
+enum AssessmentStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  ARCHIVED
+}
 
 model AssessmentQuestion {
   id           String       @id @default(cuid())
@@ -524,7 +575,14 @@ model AssessmentQuestion {
   @@map("assessment_questions")
 }
 
-enum QuestionType { MULTIPLE_CHOICE CHECKBOXES SCALE TEXT YES_NO STARS }
+enum QuestionType {
+  MULTIPLE_CHOICE
+  CHECKBOXES
+  SCALE
+  TEXT
+  YES_NO
+  STARS
+}
 
 model AssessmentOption {
   id         String  @id @default(cuid())
@@ -561,7 +619,10 @@ model AssessmentResponse {
   @@map("assessment_responses")
 }
 
-enum ResponseType { SELF MANAGER }
+enum ResponseType {
+  SELF
+  MANAGER
+}
 
 model AssessmentAnswer {
   id                String   @id @default(cuid())

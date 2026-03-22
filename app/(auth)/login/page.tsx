@@ -20,6 +20,10 @@ export default function LoginPage() {
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      email: "admin@ergohub.gr",
+      password: "change-this-password!",
+    },
   })
 
   const onSubmit = async (data: FormData) => {
@@ -31,10 +35,19 @@ export default function LoginPage() {
         password: data.password,
         redirect: false,
       })
-      if (result?.error) {
+      console.log("[LOGIN] signIn result:", JSON.stringify(result))
+      // NextAuth v5 beta: check ok/status instead of error
+      if (result?.ok === false || result?.status === 401) {
         setError("Λάθος email ή κωδικός πρόσβασης")
       } else {
-        router.push("/dashboard")
+        // Check session to determine redirect
+        const sessionRes = await fetch("/api/auth/session")
+        const session = await sessionRes.json()
+        if (session?.user?.isSuperAdmin) {
+          router.push("/admin/dashboard")
+        } else {
+          router.push("/dashboard")
+        }
         router.refresh()
       }
     } finally {

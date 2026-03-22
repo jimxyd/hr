@@ -8,12 +8,12 @@ import { useTheme } from "next-themes"
 import { Moon, Sun } from "lucide-react"
 
 const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/tenants", label: "Tenants", icon: Building2 },
-  { href: "/billing", label: "Billing", icon: CreditCard },
-  { href: "/templates", label: "Email Templates", icon: Mail },
-  { href: "/logs", label: "Logs", icon: FileText },
-  { href: "/settings", label: "Ρυθμίσεις", icon: Settings },
+  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/tenants", label: "Tenants", icon: Building2 },
+  { href: "/admin/billing", label: "Billing", icon: CreditCard },
+  { href: "/admin/templates", label: "Email Templates", icon: Mail },
+  { href: "/admin/logs", label: "Logs", icon: FileText },
+  { href: "/admin/settings", label: "Ρυθμίσεις", icon: Settings },
 ]
 
 export default function SuperAdminLayout({ children }: { children: React.ReactNode }) {

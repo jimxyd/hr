@@ -1,12 +1,12 @@
 import NextAuth, { type NextAuthConfig } from "next-auth"
-import CredentialsProvider from "next-auth/providers/credentials"
+import Credentials from "next-auth/providers/credentials"
 import { masterPrisma } from "@/lib/prisma/master"
 import { getTenantPrisma } from "@/lib/prisma/tenant"
 import bcrypt from "bcryptjs"
 
 const config: NextAuthConfig = {
   providers: [
-    CredentialsProvider({
+    Credentials({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
@@ -18,23 +18,25 @@ const config: NextAuthConfig = {
         const password = credentials?.password as string
         const subdomain = credentials?.subdomain as string | undefined
 
-        if (!email || !password) return null
+        console.log("[AUTH] authorize called:", { email, subdomain, hasPassword: !!password })
+
+        if (!email || !password) {
+          console.log("[AUTH] Missing email or password")
+          return null
+        }
 
         // Super Admin login (admin subdomain or no subdomain)
         if (!subdomain || subdomain === "admin") {
           const admin = await masterPrisma.superAdmin.findUnique({ where: { email } })
+          console.log("[AUTH] Super admin found:", !!admin, "isActive:", admin?.isActive)
           if (!admin?.isActive) return null
           const valid = await bcrypt.compare(password, admin.passwordHash)
+          console.log("[AUTH] Password valid:", valid)
           if (!valid) return null
           return {
             id: admin.id,
             email: admin.email,
             name: admin.name,
-            role: ["SUPER_ADMIN"],
-            isSuperAdmin: true,
-            tenantId: undefined,
-            tenantSubdomain: undefined,
-            tenantDbName: undefined,
           }
         }
 
@@ -54,24 +56,24 @@ const config: NextAuthConfig = {
           id: user.id,
           email: user.email,
           name: user.name,
-          role: user.role as string[],
-          isSuperAdmin: false,
-          tenantId: tenant.id,
-          tenantSubdomain: tenant.subdomain,
-          tenantDbName: tenant.dbName,
         }
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id
-        token.role = (user as any).role
-        token.isSuperAdmin = (user as any).isSuperAdmin
-        token.tenantId = (user as any).tenantId
-        token.tenantSubdomain = (user as any).tenantSubdomain
-        token.tenantDbName = (user as any).tenantDbName
+        // Look up role info from DB on first sign-in
+        const admin = await masterPrisma.superAdmin.findUnique({
+          where: { email: user.email! },
+        })
+        if (admin) {
+          token.role = ["SUPER_ADMIN"]
+          token.isSuperAdmin = true
+        } else {
+          token.isSuperAdmin = false
+        }
       }
       return token
     },

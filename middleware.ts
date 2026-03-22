@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { auth } from "@/lib/auth/config"
+import { getToken } from "next-auth/jwt"
 
 export async function middleware(request: NextRequest) {
   const hostname = request.headers.get("host") || ""
@@ -41,12 +41,15 @@ export async function middleware(request: NextRequest) {
                         request.nextUrl.pathname.startsWith("/public")
 
   if (!isPublicRoute) {
-    const session = await auth()
-    if (!session?.user) {
+    const token = await getToken({
+      req: request,
+      secret: process.env.NEXTAUTH_SECRET,
+    })
+    if (!token) {
       return NextResponse.redirect(new URL("/login", request.url))
     }
     // Suspended tenant check
-    if (!session.user.isSuperAdmin && !session.user.tenantDbName) {
+    if (!token.isSuperAdmin && !token.tenantDbName) {
       return NextResponse.redirect(new URL("/suspended", request.url))
     }
   }

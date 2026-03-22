@@ -21,7 +21,8 @@ export default function EmailTemplatesPage() {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(template),
-      }).then(r => r.json()))
+      }).then(r => r.json()),
+    onSuccess: () => {
       setSaveSuccess(true)
       setTimeout(() => setSaveSuccess(false), 3000)
     },

@@ -55,7 +55,8 @@ export default function ExpenseDetailPage({ params }: { params: { id: string } }
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ reason: rejectReason }),
-    }).then(r => r.json())); setShowRejectModal(false) },
+    }).then(r => r.json()),
+    onSuccess: () => { setShowRejectModal(false); queryClient.invalidateQueries({ queryKey: ["expense", params.id] }) },
   })
 
   const payMutation = useMutation({
@@ -63,7 +64,8 @@ export default function ExpenseDetailPage({ params }: { params: { id: string } }
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ paymentMethod: paymentData.method, paymentDate: paymentData.date, referenceNumber: paymentData.ref }),
-    }).then(r => r.json())); setShowPayModal(false) },
+    }).then(r => r.json()),
+    onSuccess: () => { setShowPayModal(false); queryClient.invalidateQueries({ queryKey: ["expense", params.id] }) },
   })
 
   const report = data?.data

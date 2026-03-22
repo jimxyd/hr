@@ -23,7 +23,7 @@ const schema = z.object({
   daysPerWeek: z.coerce.number().default(5),
   salaryGross: z.string().optional(),
   salaryNet: z.string().optional(),
-  role: z.array(z.string()).default(["EMPLOYEE"]),
+  role: z.string().default("EMPLOYEE"),
   sendInvite: z.boolean().default(true),
 })
 
@@ -58,12 +58,12 @@ export default function NewEmployeePage() {
       const res = await fetch("/api/employees", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, role: [data.role] }),
       })
       const json = await res.json()
       if (!json.success) { setError(json.error?.message || "Σφάλμα"); return }
       router.push(`/employees/${json.data.id}`)
-    } catch { setError("Σφάλμα σύνδεσης") }
+    } catch (err) { setError("Σφάλμα σύνδεσης: " + (err instanceof Error ? err.message : "")) }
     finally { setLoading(false) }
   }
 
@@ -209,7 +209,7 @@ export default function NewEmployeePage() {
           
           <div>
             <label className="form-label">Ρόλος στο Σύστημα</label>
-            <select className="form-input" onChange={e => {}}>
+            <select {...register("role")} className="form-input">
               <option value="EMPLOYEE">Εργαζόμενος</option>
               <option value="MANAGER">Manager</option>
               <option value="HR">HR Manager</option>

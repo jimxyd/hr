@@ -34,7 +34,7 @@ export default function TenantsPage() {
           <p className="text-gray-500 dark:text-gray-400 mt-1">Διαχείριση εταιρειών-πελατών</p>
         </div>
         <Link
-          href="/tenants/new"
+          href="/admin/tenants/new"
           className="flex items-center gap-2 px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
         >
           <Plus size={16} />
@@ -115,7 +115,7 @@ export default function TenantsPage() {
                 <td className="px-6 py-4">
                   <div className="flex items-center justify-end gap-2">
                     <Link
-                      href={`/tenants/${tenant.id}`}
+                      href={`/admin/tenants/${tenant.id}`}
                       className="p-1.5 text-gray-500 hover:text-primary hover:bg-gray-100 dark:hover:bg-gray-700 rounded transition-colors"
                     >
                       <ExternalLink size={16} />

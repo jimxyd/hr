@@ -9,20 +9,34 @@ import { z } from "zod"
 const schema = z.object({
   email: z.string().email("Μη έγκυρο email"),
   password: z.string().min(1, "Υποχρεωτικό πεδίο"),
+  subdomain: z.string().optional(),
 })
 
 type FormData = z.infer<typeof schema>
+
+function getSubdomainFromUrl(): string {
+  if (typeof window === "undefined") return ""
+  const hostname = window.location.hostname
+  const parts = hostname.split(".")
+  // Support company.localhost or company.ergohub.gr
+  if (parts.length > 1 && parts[0] !== "localhost" && parts[0] !== "www") {
+    return parts[0]
+  }
+  return ""
+}
 
 export default function LoginPage() {
   const router = useRouter()
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
+  const detectedSubdomain = getSubdomainFromUrl()
 
   const { register, handleSubmit, formState: { errors } } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
       email: "admin@ergohub.gr",
       password: "change-this-password!",
+      subdomain: detectedSubdomain,
     },
   })
 
@@ -30,9 +44,11 @@ export default function LoginPage() {
     setLoading(true)
     setError("")
     try {
+      const subdomain = data.subdomain || detectedSubdomain || undefined
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
+        subdomain: subdomain || "",
         redirect: false,
       })
       console.log("[LOGIN] signIn result:", JSON.stringify(result))
@@ -66,6 +82,21 @@ export default function LoginPage() {
 
         {/* Form */}
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+          {/* Subdomain field - shown on localhost when no subdomain detected in URL */}
+          {!detectedSubdomain && (
+            <div>
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+                Εταιρεία (subdomain)
+              </label>
+              <input
+                {...register("subdomain")}
+                type="text"
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+                placeholder="Κενό για Super Admin"
+              />
+              <p className="mt-1 text-xs text-gray-400">Αφήστε κενό για σύνδεση ως Super Admin</p>
+            </div>
+          )}
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               Email

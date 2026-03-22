@@ -14,8 +14,7 @@ export default function GeneralSettingsPage() {
 
   const { data } = useQuery({
     queryKey: ["branding"],
-    queryFn: () => fetch("/api/settings/branding").then(r => r.json())
-    }
+    queryFn: () => fetch("/api/settings/branding").then(r => r.json()),
   })
 
   const handleSubmit = async (e: React.FormEvent) => {

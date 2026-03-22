@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
   const leaveDays = getLeaveDaysEntitlement(seniority)
 
   // Create employee record
-  await db.employee.create({
+  const employee = await db.employee.create({
     data: {
       userId: user.id,
       title: d.title,
@@ -143,7 +143,7 @@ export async function POST(req: NextRequest) {
   if (annualLeaveType) {
     await db.leaveAllocation.create({
       data: {
-        employeeId: user.id,
+        employeeId: employee.id,
         year: currentYear,
         leaveTypeId: annualLeaveType.id,
         entitledDays: leaveDays,

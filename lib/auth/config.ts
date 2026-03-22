@@ -73,6 +73,28 @@ const config: NextAuthConfig = {
           token.isSuperAdmin = true
         } else {
           token.isSuperAdmin = false
+          // Look up tenant user info
+          // Find which tenant this user belongs to by checking all active tenants
+          const tenants = await masterPrisma.tenant.findMany({
+            where: { status: { in: ["ACTIVE", "TRIAL"] } },
+          })
+          for (const tenant of tenants) {
+            try {
+              const tenantDb = getTenantPrisma(tenant.dbName)
+              const tenantUser = await tenantDb.user.findUnique({
+                where: { email: user.email! },
+              })
+              if (tenantUser) {
+                token.tenantId = tenant.id
+                token.tenantSubdomain = tenant.subdomain
+                token.tenantDbName = tenant.dbName
+                token.role = tenantUser.role as string[]
+                break
+              }
+            } catch {
+              // Skip tenants with DB issues
+            }
+          }
         }
       }
       return token

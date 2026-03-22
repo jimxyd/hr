@@ -22,8 +22,11 @@ export const GET = withTenantAuth(async (req, { session, db }) => {
   const employeeId = req.nextUrl.searchParams.get("employeeId")
 
   const where: any = {}
-  if (!isHR && !isManager) where.employeeId = session.user.id
-  else if (employeeId) where.employeeId = employeeId
+  if (!isHR && !isManager) {
+    const emp = await db.employee.findUnique({ where: { userId: session.user.id } })
+    if (emp) where.employeeId = emp.id
+    else where.employeeId = "none"
+  } else if (employeeId) where.employeeId = employeeId
   if (status) where.status = status
 
   const [reports, total] = await Promise.all([
